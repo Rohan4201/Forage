@@ -1,0 +1,223 @@
+---
+title: "Accenture VEP (Task 2)"
+author: "Rohan Shinde"
+date: "21/01/2022"
+output: html_document
+---
+
+
+```{r}
+options(warn = -1)
+library(tidyverse, quietly = T)
+```
+
+
+
+```{r}
+file_loc <- "D:/Rohan/Y/Forage/Accenture VEP/Task 2"
+
+user <- (read_csv(paste(file_loc, "user.csv", sep = "/")))[,-1]
+
+profile <- (read_csv(paste(file_loc, "profile.csv", sep = "/")))[,-1]
+
+location <- (read_csv(paste(file_loc, "location.csv", sep = "/")))[,-1]
+
+session <- (read_csv(paste(file_loc, "session.csv", sep = "/")))[,-1]
+
+content <- (read_csv(paste(file_loc, "content.csv", sep = "/")))[,-1]
+
+reactions <- (read_csv(paste(file_loc, "reactions.csv", sep = "/")))[,-1]
+
+reaction_types <- (read_csv(paste(file_loc, "reaction_types.csv", sep = "/")))[,-1]
+
+```
+
+
+##### Cleaning the *content* table
+
+We first rename a few columns.
+
+```{r}
+content <- content %>%
+  rename(content_id = `Content ID`,
+         creator_user_id = `User ID`,
+         content_format = Type)
+```
+
+
+```{r}
+count(content, content_format)
+
+count(content, Category) %>%
+  View()
+
+```
+
+We see that some categories are have opening and closing apostrophes and the R softwares treats the ones with the apostrophes as different from those without the apostrophes even if the string in the apostrophe is the same. So we need to clean this column and remove these apostrophes.
+
+```{r}
+content$Category <- str_replace_all(content$Category, "\"", "") %>%  ## Replacing the apostrophes
+  str_to_title() ## Converting all the string to "title" case
+
+```
+
+Now we convert the *Type* column to *factor* format.
+
+```{r}
+content$content_format <- as.factor(content$content_format)
+```
+
+
+#### Cleaning the *location* column
+
+
+```{r}
+location <- rename(location, 
+                   user_id = `User ID`)
+```
+
+
+#### Cleaning the *profile* column
+
+
+```{r}
+profile <- rename(profile, 
+                  user_id = `User ID`)
+```
+
+The strings in the *Interests* column needs to be cleaned
+
+```{r}
+profile$Interests <- str_replace_all(profile$Interests, 
+                c("\'" = "", "\\[" = "", "\\]" = ""))%>%
+  str_to_title() 
+
+
+profile$Interests %>% head(25)
+
+profile %>%
+  arrange(Age) %>%
+  head(20)
+
+
+profile <- profile %>%
+  mutate(Age = ifelse(Age < 6, NA, Age))
+
+```
+
+From the *Interests* column,it seems that some numbered system was provided to the users to select their interests but due to some data entry error or a data transfer anomaly, the number codes were accidentally entered into the column instead of the actual interest corresponding to that number code. We could have cleaned up these number codes if we had the access to the number codings data as to what number represented which interest. But since that data is not provided, we leave the number codes as it is in the column.
+
+
+#### Cleaning *reaction_types* table
+
+```{r}
+
+reaction_types$Sentiment <- as.factor(reaction_types$Sentiment)
+
+```
+
+
+#### Cleaning *reactions* table
+
+```{r}
+reactions <- rename(reactions, 
+                    content_id = `Content ID`,
+                    reactor_user_id = `User ID`)
+
+```
+
+
+#### Cleaning *session* table
+
+```{r}
+session <- rename(session, 
+                  user_id = `User ID`)
+
+count(session, Device)
+
+real_devices <- count(session, Device) %>%
+  filter(n > 1) %>%
+  pull("Device")
+
+session <- session %>%
+  mutate(Device = ifelse(Device %in% real_devices, Device, NA))
+
+```
+
+
+
+#### Cleaning *user* column
+
+```{r}
+user <- rename(user,
+               user_id = `User ID`)
+
+user <- user %>%
+  mutate(Email = ifelse(str_detect(Email, "com$"), Email, NA))
+
+```
+
+
+
+
+## Modelling the Data
+
+```{r}
+unique(content$content_id) %>% length()
+
+unique(reactions$content_id) %>% length()
+
+any(is.na(reactions$content_id))
+```
+
+
+So there are only 980 unique content Id's in the *reactions* table as compared to the 1000 unique content ID's in the *content* table.
+
+
+
+### Joining the *reactions* and *reaction_types* tables
+
+```{r}
+
+reaction_and_type <- reactions %>%
+  left_join(reaction_types, by = "Type")
+
+```
+
+### Making a complete user info table
+
+Since our main task is to extract insights from the reactions of the content, we would be considering only the user info of the reactors to a certain content.
+
+```{r}
+user_info <- user %>%
+  left_join(profile, by = "user_id") %>%
+  left_join(location, by = "user_id") %>%
+  left_join(session, by = "user_id")
+
+colnames(user_info) <- paste("reactor", colnames(user_info), sep = "_")
+```
+
+
+```{r}
+df <- reaction_and_type %>%
+  left_join(content, by = "content_id") %>%
+  left_join(user_info, by = "reactor_user_id") %>%
+  select(reactor_user_id,
+         reactor_Name,
+         reactor_Email,
+         reactor_Age, everything()) 
+
+df <- df %>%
+  rename(content_type = Type,
+         reactor_session_duration = reactor_Duration)
+```
+
+
+## Creating a new CSV file of the merged data
+
+
+```{r}
+write_csv(df, paste(file_loc, "merged_data.csv", sep = "/"))
+```
+
+
