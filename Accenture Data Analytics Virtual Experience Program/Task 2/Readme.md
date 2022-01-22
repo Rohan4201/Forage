@@ -2,11 +2,11 @@
 
 ### Table of contents of the folder
 
-* [https://github.com/Rohan4201/Forage/tree/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/Provided%20Data%20Files](Provided Data Files for the task)
+* [Provided Data Files for the task](https://github.com/Rohan4201/Forage/tree/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/Provided%20Data%20Files)
 
-* [https://github.com/Rohan4201/Forage/blob/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/merged_data.csv](Merged Data with all columns)
+* [Merged Data with all columns](https://github.com/Rohan4201/Forage/blob/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/merged_data.csv)
 
-* [https://github.com/Rohan4201/Forage/blob/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/task2.Rmd](Code used to create the *merged_data.csv* file)
+* [Code used to create the *merged_data.csv* file](https://github.com/Rohan4201/Forage/blob/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/task2.Rmd)
 
 The activities to be completed in task 2 of the program are summarised as follows.
 
