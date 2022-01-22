@@ -1,6 +1,14 @@
 ## Task 2
 
-The activitiesto be completed in task 2 of the program are summarised as follows.
+### Table of contents of the folder
+
+* [https://github.com/Rohan4201/Forage/tree/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/Provided%20Data%20Files](Provided Data Files for the task)
+
+* [https://github.com/Rohan4201/Forage/blob/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/merged_data.csv](Merged Data with all columns)
+
+* [https://github.com/Rohan4201/Forage/blob/main/Accenture%20Data%20Analytics%20Virtual%20Experience%20Program/Task%202/task2.Rmd](Code used to create the *merged_data.csv* file)
+
+The activities to be completed in task 2 of the program are summarised as follows.
 
 ### 1. Requirements gathering
 
@@ -14,3 +22,4 @@ Before we begin to work with the relevant data sets, we’ll need to ensure that
 ### 3. Data modeling
 
 Finally, use this knowledge to create a final data set containing all of the columns that you will need to complete the task. Based on which columns we think will be most useful, we may be required to merge tables together by using the Unique Keys within tables. You should spend some time modeling the data to create your final data set for this task.
+
